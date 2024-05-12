@@ -14,7 +14,8 @@ class UserResource extends Resource
 {
   protected static ?string $model = User::class;
 
-  protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+  protected static ?string $navigationIcon = 'heroicon-o-user-group';
+  protected static ?string $navigationGroup = 'Setting';
 
   public static function form(Form $form): Form
   {
@@ -58,10 +59,14 @@ class UserResource extends Resource
         Tables\Columns\TextColumn::make('roles.name')
           ->sortable(),
         Tables\Columns\TextColumn::make('created_at')
-          ->date(),
+          ->label('Member Since')
+          ->since('Asia/Jakarta'),
       ])
       ->filters([
-        //
+        Tables\Filters\SelectFilter::make('roles')
+          ->relationship('roles', 'name')
+          ->searchable()
+          ->preload()
       ])
       ->actions([
         Tables\Actions\EditAction::make(),
