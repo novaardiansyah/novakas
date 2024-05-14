@@ -24,7 +24,7 @@ class PaymentAccountResource extends Resource
   public static function getEloquentQuery(): Builder
   {
     $parent = parent::getEloquentQuery();
-    if (auth()->user()->can('*')) return $parent;
+    if (auth()->user()->checkPermissionTo('*')) return $parent;
     return $parent->where('user_id', '=', auth()->id());
   }
 
