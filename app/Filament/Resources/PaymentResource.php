@@ -6,7 +6,6 @@ use App\Filament\Resources\PaymentResource\Pages;
 use App\Models\Payment;
 use App\Models\PaymentAccount;
 use Carbon\Carbon;
-use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -53,6 +52,8 @@ class PaymentResource extends Resource
                 ->label('Tanggal')
                 ->required()
                 ->default(Carbon::now())
+                ->displayFormat('d M Y')
+                ->closeOnDateSelection()
                 ->native(false),
               Forms\Components\Textarea::make('name')
                 ->label('Catatan')
@@ -72,7 +73,6 @@ class PaymentResource extends Resource
                 ->relationship('payment_type', titleAttribute: 'name')
                 ->required()
                 ->default(2)
-                ->disabledOn('edit')
                 ->native(false)
             ]),
 
@@ -107,10 +107,37 @@ class PaymentResource extends Resource
   {
     return $table
       ->columns([
-        //
+        Tables\Columns\TextColumn::make('amount')
+          ->label('Nominal')
+          ->sortable()
+          ->formatStateUsing(function (string $state): string {
+            return 'Rp. ' . number_format($state, 0, ',', '.');
+          }),
+        Tables\Columns\TextColumn::make('payment_account.name')
+          ->label('Akun Kas')
+          ->sortable(),
+        Tables\Columns\TextColumn::make('payment_type.name')
+          ->label('Tipe Transaksi')
+          ->badge()
+          ->color(fn (string $state): string => match($state) {
+            'pemasukan'   => 'success',
+            'pengeluaran' => 'danger',
+          }),
+        Tables\Columns\TextColumn::make('date')
+            ->label('Tanggal')
+            ->date('d M Y')
+            ->sortable(),
+        Tables\Columns\TextColumn::make('name')
+          ->label('Catatan')
+          ->searchable(),
       ])
       ->filters([
-        //
+        Tables\Filters\SelectFilter::make('payment_account_id')
+          ->label('Akun Kas')
+          ->preload()
+          ->searchable()
+          ->multiple()
+          ->relationship('payment_account', 'name'),
       ])
       ->actions([
         Tables\Actions\EditAction::make()
@@ -120,30 +147,63 @@ class PaymentResource extends Resource
             return $data;
           })
           ->before(function (Model $record, array $data, $action): array {
-            $amount = $data['amount'] ?? 0;
+            $amount = intval($data['amount'] ?? 0);
+            $type_id = intval($data['type_id'] ?? 0);
 
+            $record          = Payment::with('payment_account')->find($record->id);
+            $payment_account = $record->payment_account;
+            $current_type_id = $record->type_id;
+
+            if ($current_type_id !== $type_id) {
+              if ($type_id == 2) {
+                if ($payment_account->deposit < $amount) {
+                  Notification::make()
+                    ->danger()
+                    ->title('Proses gagal!')
+                    ->body('Saldo akun kas tidak mencukupi.')
+                    ->send();
+                  $action->halt();
+                }
+
+                $payment_account->deposit -= $amount;
+              } else {
+                $payment_account->deposit += $amount;
+              }
+            } else {
+              if ($current_type_id == 2) {
+                $newDeposit = $record->payment_account->deposit + $record->amount;
+
+                if ($newDeposit < $amount) {
+                  Notification::make()
+                    ->danger()
+                    ->title('Proses gagal!')
+                    ->body('Saldo akun kas tidak mencukupi.')
+                    ->send();
+                  $action->halt();
+                }
+
+                $record->payment_account->deposit = $newDeposit - $amount;
+              } else {
+                $record->payment_account->deposit = $record->payment_account->deposit - $record->amount + $amount;
+              }
+            }
+
+            $record->payment_account->save();
+            return $data;
+          }),
+        
+        Tables\Actions\DeleteAction::make()
+          ->after(function (Model $record): void {
             $payment_account = PaymentAccount::find($record->payment_account_id);
 
             if ($record->type_id == 2) {
-              $newDeposit = $payment_account->deposit + $record->amount;
-
-              if ($newDeposit < $amount) {
-                Notification::make()
-                  ->danger()
-                  ->title('Proses gagal!')
-                  ->body('Saldo akun kas tidak mencukupi.')
-                  ->send();
-                $action->halt();
-              }
-
-              $payment_account->deposit = $newDeposit - $amount;
+              $payment_account->deposit += $record->amount;
             } else {
-              $payment_account->deposit = $payment_account->deposit - $record->amount + $amount;
+              $payment_account->deposit -= $record->amount;
             }
 
             $payment_account->save();
-            return $data;
-          }),
+          })
       ])
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([
