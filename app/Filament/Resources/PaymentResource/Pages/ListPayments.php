@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\PaymentResource\Pages;
 
 use App\Filament\Resources\PaymentResource;
+use App\Filament\Resources\PaymentResource\Widgets\PaymentStats;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,6 +28,13 @@ class ListPayments extends ListRecords
         ->modifyQueryUsing(fn (Builder $query) => $query->where('type_id', '=', 1)),
       'Pengeluaran' => Tab::make()
         ->modifyQueryUsing(fn (Builder $query) => $query->where('type_id', '=', 2)),
+    ];
+  }
+
+  public function getFooterWidgets(): array
+  {
+    return [
+      PaymentStats::class
     ];
   }
 }

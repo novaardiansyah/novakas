@@ -65,7 +65,7 @@ class PaymentResource extends Resource
         ->columnSpan(2),
 
         Forms\Components\Group::make([
-          Forms\Components\Section::make('Jenis Transaksi')
+          Forms\Components\Section::make('Akun Kas')
             ->collapsible()
             ->schema([
               Forms\Components\Select::make('type_id')
@@ -73,12 +73,7 @@ class PaymentResource extends Resource
                 ->relationship('payment_type', titleAttribute: 'name')
                 ->required()
                 ->default(2)
-                ->native(false)
-            ]),
-
-          Forms\Components\Section::make('Akun Kas')
-            ->collapsible()
-            ->schema([
+                ->native(false),
               Forms\Components\Select::make('payment_account_id')
                 ->label('Akun Kas')
                 ->relationship('payment_account', titleAttribute: 'name')
@@ -131,6 +126,7 @@ class PaymentResource extends Resource
           ->label('Catatan')
           ->searchable(),
       ])
+      ->defaultSort('date', 'desc')
       ->filters([
         Tables\Filters\SelectFilter::make('payment_account_id')
           ->label('Akun Kas')
