@@ -23,4 +23,9 @@ class Payment extends Model
     if (auth()->user()->checkPermissionTo('*')) return $relationship;
     return $relationship->where('user_id', auth()->user()->id);
   }
+
+  public function payment_type(): BelongsTo
+  {
+    return $this->belongsTo(PaymentType::class, 'type_id');
+  }
 }
