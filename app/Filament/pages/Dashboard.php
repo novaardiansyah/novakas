@@ -5,7 +5,6 @@ namespace App\Filament\Pages;
 use Filament\Forms\Form;
 use Filament\Forms;
 use Filament\Pages\Dashboard\Concerns\HasFiltersForm;
-use Carbon\Carbon;
 
 class Dashboard extends \Filament\Pages\Dashboard
 {
@@ -29,11 +28,13 @@ class Dashboard extends \Filament\Pages\Dashboard
         ->schema([
           Forms\Components\DatePicker::make('startDate')
             ->label('Tanggal')
+            ->placeholder('Masukkan tanggal mulai')
             ->displayFormat('d M Y')
             ->closeOnDateSelection()
             ->native(false),
           Forms\Components\DatePicker::make('endDate')
             ->label('Sampai dengan')
+            ->placeholder('Masukkan tanggal akhir')
             ->displayFormat('d M Y')
             ->closeOnDateSelection()
             ->native(false)

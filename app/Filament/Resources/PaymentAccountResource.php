@@ -18,9 +18,10 @@ class PaymentAccountResource extends Resource
   protected static ?string $model = PaymentAccount::class;
 
   protected static ?string $navigationIcon = 'heroicon-o-credit-card';
-  protected static ?string $navigationGroup = 'Finance';
+  protected static ?string $navigationGroup = 'Keuangan';
   protected static ?string $label = 'Akun Kas';
-
+  protected static ?int $navigationSort = 2;
+  
   public static function getEloquentQuery(): Builder
   {
     $parent = parent::getEloquentQuery();

@@ -20,8 +20,9 @@ class PaymentResource extends Resource
   protected static ?string $model = Payment::class;
 
   protected static ?string $navigationIcon = 'heroicon-o-banknotes';
-  protected static ?string $navigationGroup = 'Finance';
+  protected static ?string $navigationGroup = 'Keuangan';
   protected static ?string $label = 'Keuangan';
+  protected static ?int $navigationSort = 1;
 
   public static function getEloquentQuery(): Builder
   {

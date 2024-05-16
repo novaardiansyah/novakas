@@ -13,6 +13,7 @@ class RolePolicy
    */
   public function viewAny(User $user): bool
   {
+    return false;
     return $user->checkPermissionTo('*') || ($user->checkPermissionTo('view-any Role'));
   }
 

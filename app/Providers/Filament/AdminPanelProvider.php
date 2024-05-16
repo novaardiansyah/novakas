@@ -28,6 +28,10 @@ class AdminPanelProvider extends PanelProvider
       ->id('admin')
       ->path('admin')
       ->login()
+      ->registration()
+      ->favicon(asset('images/novakas-favicon-color.png'))
+      ->brandLogo(asset('images/novakas-high-resolution-logo-transparent.png'))
+      ->brandLogoHeight('3rem')
       ->colors([
         'primary' => Color::Amber,
       ])
