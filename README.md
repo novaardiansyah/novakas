@@ -47,6 +47,19 @@ Get a glimpse of the app's enchanting world by exploring the current progress at
   <img src="public/capture/image-2.png" alt="image-2" style="width: 300px;" />
 </div>
 
+## How to Use 📝
+
+Let's kickstart your financial journey with these simple steps:
+
+1. **Sign Up/Login**: Head over to our platform at [https://kas.nova-it.my.id/public/](https://kas.nova-it.my.id/public/) to either create your account or log in.
+   
+2. **Create Your Cash Account**: Start by setting up your cash account to keep track of your finances effectively.
+
+3. **Record Transactions**: Record every expense and income meticulously to gain a clear understanding of your financial status.
+
+4. **Need Help?**: If you have any questions or encounter any difficulties along the way, don't hesitate to reach out to me using the contact information provided above.
+
+Start managing your finances hassle-free today!
 
 ## Project Status 🚀 
 
