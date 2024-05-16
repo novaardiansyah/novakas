@@ -16,13 +16,6 @@ class User extends Authenticatable implements FilamentUser
 {
   use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
-  protected static function booted(): void
-  {
-    static::creating(function (User $user) {
-      $user->assignRole('Customer');
-    });
-  }
-
   /**
    * The attributes that are mass assignable.
    *
