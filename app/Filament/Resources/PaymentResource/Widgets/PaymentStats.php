@@ -7,6 +7,8 @@ use App\Models\PaymentAccount;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
+use function App\Helpers\UtilsHelper\formatNumberToShortString;
+
 class PaymentStats extends BaseWidget
 {
   protected function getStats(): array
@@ -26,15 +28,15 @@ class PaymentStats extends BaseWidget
     $payments = $tmp_payments->first();
 
     return [
-      Stat::make('Total Pemasukan', 'Rp. ' . number_format($payments->all_pemasukan, 0, ',', '.'))
-        ->description('Hari ini: Rp. ' . number_format($payments->day_pemasukan, 0, ',', '.'))
+      Stat::make('Total Pemasukan', formatNumberToShortString($payments->all_pemasukan, false))
+        ->description('Hari ini: ' . formatNumberToShortString($payments->day_pemasukan, false))
         ->descriptionIcon('heroicon-m-arrow-trending-up')
         ->color('success'),
-      Stat::make('Total Pengeluaran', 'Rp. ' . number_format($payments->all_pengeluaran, 0, ',', '.'))
-        ->description('Hari ini: Rp. ' . number_format($payments->day_pengeluaran, 0, ',', '.'))
+      Stat::make('Total Pengeluaran', formatNumberToShortString($payments->all_pengeluaran, false))
+        ->description('Hari ini: ' . formatNumberToShortString($payments->day_pengeluaran, false))
         ->descriptionIcon('heroicon-m-arrow-trending-down')
         ->color('danger'),
-      Stat::make('Total Saldo', 'Rp. ' . number_format($total_saldo, 0, ',', '.'))
+      Stat::make('Total Saldo', formatNumberToShortString($total_saldo, false))
         ->description('Saldo tersisa disemua Akun Kas')
         ->descriptionIcon('heroicon-m-credit-card')
         ->color('primary'),

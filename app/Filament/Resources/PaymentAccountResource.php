@@ -79,8 +79,10 @@ class PaymentAccountResource extends Resource
           ->searchable()
           ->sortable(),
         Tables\Columns\TextColumn::make('deposit')
-          ->money(currency: 'IDR', locale: 'id')
-          ->sortable(),
+          ->sortable()
+          ->formatStateUsing(function (string $state): string {
+            return 'Rp. ' . number_format($state, 0, ',', '.');
+          }),
         Tables\Columns\TextColumn::make('user.name')
           ->label('Nama Pemilik')
           ->hidden(fn() => !auth()->user()->can('*')),
@@ -93,9 +95,11 @@ class PaymentAccountResource extends Resource
         //
       ])
       ->actions([
-        Tables\Actions\ViewAction::make(),
-        Tables\Actions\EditAction::make(),
-        Tables\Actions\DeleteAction::make(),
+        Tables\Actions\ActionGroup::make([
+          Tables\Actions\ViewAction::make(),
+          Tables\Actions\EditAction::make(),
+          Tables\Actions\DeleteAction::make(),
+        ])
       ])
       ->bulkActions([
         Tables\Actions\BulkActionGroup::make([
@@ -114,9 +118,9 @@ class PaymentAccountResource extends Resource
   public static function getPages(): array
   {
     return [
-      'index' => Pages\ListPaymentAccounts::route('/'),
+      'index'  => Pages\ListPaymentAccounts::route('/'),
       'create' => Pages\CreatePaymentAccount::route('/create'),
-      'edit' => Pages\EditPaymentAccount::route('/{record}/edit'),
+      // 'edit'   => Pages\EditPaymentAccount::route('/{record}/edit'),
     ];
   }
 }

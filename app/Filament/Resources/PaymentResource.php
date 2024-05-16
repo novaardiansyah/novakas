@@ -14,9 +14,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Log\Logger;
-
-use function Filament\Support\format_number;
 
 class PaymentResource extends Resource
 {
